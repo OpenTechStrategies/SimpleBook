@@ -1144,6 +1144,7 @@ class SpecialCollection extends SpecialPage {
 
 		switch ( $result->get( 'state' ) ) {
 			case 'pending':
+            case 'started':
 			case 'progress':
 				$out->addHeadItem(
 					'refresh-nojs',
@@ -1239,24 +1240,23 @@ class SpecialCollection extends SpecialPage {
 		$info = false;
 		$url = $r->get( 'url' );
 		if ( $url ) {
-			$req = MWHttpRequest::factory( $url, null, __METHOD__ );
-			$req->setCallback( function ( $fh, $content ) {
-				return fwrite( $this->tempfile, $content );
-			} );
-			if ( $req->execute()->isOK() ) {
-				$info = true;
-			}
-			$content_type = $r->get( 'content_type' );
-			$content_length = $r->get( 'content_length' );
-			$content_disposition = $r->get( 'content_disposition' );
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$resp = curl_exec ($ch);
+			header('Content-Type: ' . curl_getinfo($ch, CURLINFO_CONTENT_TYPE));
+			header('Content-Length: ' . curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD));
+			header('Content-Disposition: inline; filename="book.pdf"');
+			print($resp);
+			curl_close ($ch);
+
+			$out = $this->getOutput()->disable();
+			return;
 		} else {
 			$info = $api->download( $collectionId );
 			$content_type = $info->get( 'content_type' );
 			$content_length = $info->get( 'download_content_length' );
 			$content_disposition = null;
-			if ( $info->isError() ) {
-				$info = false;
-			}
 		}
 		if ( !$info ) {
 			$this->getOutput()->showErrorPage(
@@ -1265,7 +1265,7 @@ class SpecialCollection extends SpecialPage {
 			);
 			return;
 		}
-		wfResetOutputBuffers();
+		//wfResetOutputBuffers();
 		header( 'Content-Type: ' . $content_type );
 		header( 'Content-Length: ' . $content_length );
 		if ( $content_disposition ) {
@@ -1281,8 +1281,6 @@ class SpecialCollection extends SpecialPage {
 				);
 			}
 		}
-		fseek( $this->tempfile, 0 );
-		fpassthru( $this->tempfile );
 		$this->getOutput()->disable();
 	}
 

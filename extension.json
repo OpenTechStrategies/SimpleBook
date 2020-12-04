@@ -1,17 +1,18 @@
 {
-	"name": "Collection",
+	"name": "SimpleBook",
 	"version": "1.8.0",
 	"author": [
 		"PediaPress GmbH",
 		"Siebrand Mazeland",
-		"Marcin Cieślak"
+		"Marcin Cieślak",
+		"Open Tech Strategies"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:Collection",
 	"descriptionmsg": "coll-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.34.0"
+		"MediaWiki": ">= 1.33.0"
 	},
 	"callback": "CollectionHooks::registerExtension",
 	"AvailableRights": [
@@ -47,6 +48,7 @@
 		"CollectionSuggestTemplate": "templates/CollectionSuggestTemplate.php",
 		"CollectionRenderingAPI": "includes/rendering/CollectionRenderingAPI.php",
 		"MWServeRenderingAPI": "includes/rendering/MWServeRenderingAPI.php",
+		"MWPDFRenderingAPI": "includes/rendering/MWPDFRenderingAPI.php",
 		"CollectionAPIResult": "includes/rendering/CollectionAPIResult.php"
 	},
 	"AutoloadNamespaces": {

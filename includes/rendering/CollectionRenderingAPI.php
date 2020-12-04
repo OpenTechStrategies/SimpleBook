@@ -19,7 +19,7 @@ abstract class CollectionRenderingAPI {
 	 */
 	public static function instance( $writer = false ) {
 		if ( !self::$inst ) {
-			self::$inst = new MWServeRenderingAPI( $writer );
+			self::$inst = new MWPDFRenderingAPI( $writer );
 		}
 		return self::$inst;
 	}

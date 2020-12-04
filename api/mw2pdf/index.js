@@ -26,9 +26,13 @@ program
   .description('creates a pdf consisting of the combined urls (comma separated)')
   .option('--cookie-jar [path]', 'Path to cookies jar')
   .option('--cookie-json [path]', 'Path to cookies json file')
+  .option('--out [file]', 'name of output file')
   .action(async (urls, options) => {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch(
+      { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+    )
     const merger = new PDFMerger()
+    const cleanup = []
     let cookies
 
     if (typeof options.cookieJson !== 'undefined') {
@@ -50,10 +54,13 @@ program
       await page.goto(url, { waitUntil: 'networkidle2' })
       await page.pdf({ path: filename, format: 'A4' })
       merger.add(filename)
+      cleanup.push(filename)
     }
 
     // Merge new pdfs into single file
-    await merger.save('merged.pdf')
+    await merger.save(options.out || 'merged.pdf')
+    cleanup.map((fn) => { return fs.unlinkSync(fn) })
+    browser.close()
   })
 
-program.parse(process.argv)
+program.parseAsync(process.argv)
