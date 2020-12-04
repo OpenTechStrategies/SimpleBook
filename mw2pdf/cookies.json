@@ -1,0 +1,201 @@
+[
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "lfcUserID",
+		"path": "/",
+		"value": "1",
+		"expires": 1620747034,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "lfcUserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1620747034,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "lfcToken",
+		"path": "/",
+		"value": "6d7262de17e3649bb20c74825a7142a5",
+		"expires": 1620747034,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LLIIA2020UserID",
+		"path": "/",
+		"value": "1",
+		"expires": 1621346327,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LLIIA2020UserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1621346327,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LLIIA2020Token",
+		"path": "/",
+		"value": "2647126c340b24a2b79e60ca5a04527f",
+		"expires": 1621346327,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LoneStar2020UserID",
+		"path": "/",
+		"value": "1",
+		"expires": 1621350220,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LoneStar2020UserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1621350220,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LoneStar2020Token",
+		"path": "/",
+		"value": "010f24176f492be7511b8fe98567ccd4",
+		"expires": 1621350220,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLoneStar2020UserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1608393722,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GlobalViewUserID",
+		"path": "/",
+		"value": "1",
+		"expires": 1621786350,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GlobalViewUserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1621786350,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GlobalViewToken",
+		"path": "/",
+		"value": "725371f6112f35cabaffcb383934ed00",
+		"expires": 1621786350,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "DemoViewUserID",
+		"path": "/",
+		"value": "1",
+		"expires": 1621858928,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "DemoViewUserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1621858928,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "DemoViewToken",
+		"path": "/",
+		"value": "bf571ae7f129b47c0a904ef0bae625e9",
+		"expires": 1621858928,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "DemoView_session",
+		"path": "/",
+		"value": "n4pop1e0qggl4hc2udag4vuf2089k3ml",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LLIIA2020_session",
+		"path": "/",
+		"value": "qbjrpe6c0olqn6bog101udpdu5bnn65e",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GlobalView_session",
+		"path": "/",
+		"value": "a49ll7ifltugi8fsenkvdprv03avtcso",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "LoneStar2020_session",
+		"path": "/",
+		"value": "a6tbsun063486j98e05pcoqv4o2a3126",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLoneStar2020_session",
+		"path": "/",
+		"value": "t76aj07j2dfhi2qqt7hqjt3beq7uh038",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLLIIA2020_session",
+		"path": "/",
+		"value": "dbih2avorn4o2c1p3rrm39vlod1m8hp9",
+		"expires": 0.0,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLLIIA2020UserID",
+		"path": "/",
+		"value": "1",
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLLIIA2020UserName",
+		"path": "/",
+		"value": "Admin",
+		"expires": 1622304144,
+		"httpOnly": true
+	},
+	{
+		"domain": "ec2-3-129-18-236.us-east-2.compute.amazonaws.com/",
+		"name": "GVLLIIA2020Token",
+		"path": "/",
+		"value": "eb2cfb500db694d2cc833c0e14dc0e89",
+		"expires": 1622304144,
+		"httpOnly": true
+	}
+]
