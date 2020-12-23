@@ -50,8 +50,6 @@ def process_command():
         return render_book()
     elif request.form["command"] == "render_status":
         return render_status()
-    elif request.form["command"] == "download":
-        return download_pdf()
 
 
 @app.route("/<collection_id>/", methods=["POST", "GET"])
