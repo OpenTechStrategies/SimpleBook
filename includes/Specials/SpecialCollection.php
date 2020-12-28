@@ -396,7 +396,6 @@ class SpecialCollection extends SpecialPage {
 		$out->setPageTitle( $this->msg( 'coll-book_creator' ) );
 
 		MessageBoxHelper::addModuleStyles( $out );
-		$out->addHTML( MessageBoxHelper::renderWarningBoxes() );
 		$out->addWikiMsg( 'coll-book_creator_intro' );
 
 		$out->addModules( 'ext.collection.checkLoadFromLocalStorage' );
