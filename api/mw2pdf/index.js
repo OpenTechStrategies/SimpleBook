@@ -13,7 +13,8 @@ program
   .description('creates a pdf consisting of the combined urls (comma separated)')
   .option('--cookie-jar [path]', 'Path to cookies jar')
   .option('--cookie-json [path]', 'Path to cookies json file')
-  .option('--title[title]', 'Title of book')
+  .option('--title [title]', 'Title of book')
+  .option('--subtitle [subtitle]', 'Title of book')
   .option('--out [file]', 'name of output file')
   .action(async (url, urls, options) => {
     const browser = await puppeteer.launch(
@@ -24,6 +25,7 @@ program
     const cleanup = []
     const toc = []
     const title = options.title || 'Proposal Book'
+    const subtitle = options.subtitle || 'Table of Contents'
     urls = [url, ...urls] || [url]
     let cookies
 
@@ -90,7 +92,7 @@ program
       cleanup.push(filename)
     }
     // Generate table of contents page
-    await generateToc(title, toc)
+    await generateToc(title, subtitle, toc)
 
     toMerge.unshift(`toc-${title}.pdf`)
     cleanup.push(`toc-${title}.pdf`)

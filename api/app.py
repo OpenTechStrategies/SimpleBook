@@ -10,7 +10,7 @@ app = Flask(__name__)
 q = Queue(connection=conn)
 
 
-def print_to_pdf(urls):
+def print_to_pdf(urls, title, subtitle):
     job = get_current_job()
     subprocess.call(["sh", "mw2pdf/get-cookies.sh"])
     subprocess.call(
@@ -22,6 +22,10 @@ def print_to_pdf(urls):
             "cookies.jar",
             "--out",
             f"./{job.id}.pdf",
+            "--title",
+            title,
+            "--subtitle",
+            subtitle,
             *urls,
         ]
     )
@@ -31,7 +35,11 @@ def print_to_pdf(urls):
 def render_book():
     book = json.loads(request.form["metabook"])
     urls = list(map(lambda i: i["url"], book["items"]))
-    job = q.enqueue_call(func=print_to_pdf, args=(urls,), result_ttl=10000)
+    job = q.enqueue_call(
+        func=print_to_pdf,
+        args=(urls, book["title"], book["subtitle"]),
+        result_ttl=10000,
+    )
     return {"collection_id": job.get_id(), "is_cached": False}
 
 

@@ -7,7 +7,7 @@ const { fonts } = require('./util.js')
  * @param {String} title
  * @param {Array[Object]} pdfs
  */
-async function generateToc (title, pdfs) {
+async function generateToc (title, subtitle, pdfs) {
   // playground requires you to assign document definition to a variable called dd
 
   let currentPage = 1
@@ -26,7 +26,7 @@ async function generateToc (title, pdfs) {
       {
         stack: [
           title,
-          { text: 'Table of Contents', style: 'subheader' }
+          { text: subtitle, style: 'subheader' }
         ],
         style: 'header'
       },
