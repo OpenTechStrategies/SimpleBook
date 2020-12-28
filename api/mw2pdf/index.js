@@ -9,13 +9,13 @@ const { generateToc } = require('./toc.js')
 program.version('0.0.1')
 
 program
-  .command('pdf [urls]')
+  .command('pdf <url> [urls...]')
   .description('creates a pdf consisting of the combined urls (comma separated)')
   .option('--cookie-jar [path]', 'Path to cookies jar')
   .option('--cookie-json [path]', 'Path to cookies json file')
   .option('--title[title]', 'Title of book')
   .option('--out [file]', 'name of output file')
-  .action(async (urls, options) => {
+  .action(async (url, urls, options) => {
     const browser = await puppeteer.launch(
       { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
     )
@@ -24,6 +24,7 @@ program
     const cleanup = []
     const toc = []
     const title = options.title || 'Proposal Book'
+    urls = [url, ...urls] || [url]
     let cookies
 
     if (typeof options.cookieJson !== 'undefined') {
@@ -33,7 +34,7 @@ program
     }
 
     // Parse each page into it's own into a pdf file
-    for (const [i, url] of urls.split(',').entries()) {
+    for (const [i, url] of urls.entries()) {
       const filename = `./${i}.pdf`
       const titleFilename = `title-${i}.pdf`
       const name = formatTitle(new URL(url).pathname.split('/').slice(-1).pop())

@@ -22,7 +22,7 @@ def print_to_pdf(urls):
             "cookies.jar",
             "--out",
             f"./{job.id}.pdf",
-            ",".join(urls),
+            *urls,
         ]
     )
     return

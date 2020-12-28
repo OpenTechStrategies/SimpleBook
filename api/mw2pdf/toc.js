@@ -15,9 +15,9 @@ async function generateToc (title, pdfs) {
   for (const o of pdfs) {
     const title = o.name
     const pageNumber = await o.pages
-    const fillerWidth = 100 - (title.length + String(currentPage).length + 1)
+    const fillerWidth = 100 - (title.length + String(currentPage).length)
     const filler = new Array(fillerWidth).join('.')
-    tocList.push(`${title}${filler}${currentPage + 1}`)
+    tocList.push(`${title}${filler}${currentPage}`)
     currentPage += (Number(pageNumber) + 1)
   }
 
