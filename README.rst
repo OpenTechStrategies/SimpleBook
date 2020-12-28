@@ -1,9 +1,27 @@
 ====================================
-*Collection* Extension for MediaWiki
+*SimpleBook* Extension for MediaWiki
 ====================================
 
-About the *Collection* Extension
-================================
+SimpleBook is a MediaWiki Extension for rendering a collection of wiki
+pages as a PDF with a table of contents.  It was motivated by the
+printing needs of the `Torque Sites`_ project.
+
+SimpleBook a simplified fork of the Collection_ extension.  Collection
+had many features that we didn't need, and for the enhancements that
+we needed to make, we found that it would be easiest to pare down
+Collection and then add them to the core that remains.
+
+For now, the remainder of this README is simply the original text of
+Collection extension's README.  As we diverge farther from Collection,
+we'll update this README.
+
+We always welcome questions, ideas, issues, and patches, to both code
+and documentation.  You can reach us here or in the `Book Printing
+stream`_ in our Zulip chat server.
+
+======================================================
+ORIGINAL TEXT FROM THE *COLLECTION* EXTENSION FOLLOWS:
+======================================================
 
 The *Collection* extension for MediaWiki_ allows users to collect articles and
 generate downloadable version in different formats (PDF, OpenDocument Text etc.)
@@ -428,3 +446,6 @@ system message.
 .. _`Commonwealth of Learning`: http://www.col.org/
 .. _`MediaWiki API`: https://www.mediawiki.org/wiki/API
 .. _`Meta-Wiki`: https://meta.wikimedia.org/wiki/Book_tool/Help/Books
+.. _`Torque Sites`: https://github.com/OpenTechStrategies/torque-sites
+.. _Collection: https://www.mediawiki.org/wiki/Special:ExtensionDistributor/Collection
+.. _`Book Printing stream`: https://chat.opentechstrategies.com/#narrow/stream/45-Lever-for.20Change/topic/Book.20Printing
