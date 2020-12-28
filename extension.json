@@ -194,25 +194,6 @@
 						"coll-setting-papersize-a4": "a4",
 						"coll-setting-papersize-letter": "letter"
 					}
-				},
-				"toc": {
-					"type": "select",
-					"label-message": "coll-setting-toc",
-					"default": "auto",
-					"options": {
-						"coll-setting-toc-auto": "auto",
-						"coll-setting-toc-yes": "yes",
-						"coll-setting-toc-no": "no"
-					}
-				},
-				"columns": {
-					"type": "select",
-					"label-message": "coll-setting-columns",
-					"default": "2",
-					"options": {
-						"coll-setting-columns-1": "1",
-						"coll-setting-columns-2": "2"
-					}
 				}
 			}
 		},

@@ -26,7 +26,6 @@ class CollectionPageTemplate extends QuickTemplate {
 		// If undefined set title and subtitle to empty string (T189636)
 		$collection += [
 			'title' => '',
-			'subtitle' => '',
 			'settings' => [],
 			'items' => [],
 		];
@@ -95,13 +94,6 @@ class CollectionPageTemplate extends QuickTemplate {
 				'id' => 'titleInput',
 				'size' => '',
 				'name' => 'collectionTitle',
-			],
-			'collectionSubtitle' => [
-				'type' => 'text',
-				'label-message' => 'coll-subtitle',
-				'id' => 'subtitleInput',
-				'size' => '',
-				'name' => 'collectionSubtitle',
 			],
 		];
 		foreach ( $this->data['settings'] as $fieldname => $descriptor ) {

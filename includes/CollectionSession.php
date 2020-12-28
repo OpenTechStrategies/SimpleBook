@@ -193,7 +193,6 @@ class CollectionSession {
 		return array_merge( [
 			/* Make sure required properties are present.  */
 			'title' => '',
-			'subtitle' => '',
 			'settings' => [],
 			'items' => [],
 		], $collection );
