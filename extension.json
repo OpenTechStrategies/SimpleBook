@@ -242,9 +242,7 @@
 		},
 		"CollectionShowRenderNotes": {
 			"description": "Optional notes that are displayed on the download screen for the rendered document. Each entry is a message key",
-			"value": [
-				"coll-rendering_finished_note_not_satisfied"
-			]
+			"value": []
 		},
 		"CollectionDisableDownloadSection": {
 			"description": "Disable the download section see https://phabricator.wikimedia.org/T175996",
