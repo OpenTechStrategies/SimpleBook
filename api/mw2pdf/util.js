@@ -40,7 +40,9 @@ async function getPdfInfo (filename) {
  * @param {String} title
  */
 function formatTitle (title) {
-  return decodeURIComponent(title).replaceAll('_', ' ').replaceAll(/[0-9]|\(|\)/g, '')
+  return decodeURIComponent(title)
+    .replaceAll('_', ' ') // remove underscores
+    .replaceAll(/[0-9]|\(|\)/g, '') // remove proposal ID
 }
 
 /**
