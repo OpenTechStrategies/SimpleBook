@@ -11,6 +11,7 @@
   "dependencies": {
     "commander": "^6.2.0",
     "cookiefile": "^1.0.10",
+    "hummus-recipe": "^2.0.0",
     "pdf-merger-js": "^3.0.5",
     "pdfjs-dist": "^2.5.207",
     "pdfmake": "^0.1.68",

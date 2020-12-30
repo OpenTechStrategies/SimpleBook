@@ -3,7 +3,7 @@ const fs = require('fs')
 const PDFMerger = require('pdf-merger-js')
 const PdfPrinter = require('pdfmake')
 const { program } = require('commander')
-const { getPageLength, formatTitle, loadCookieJar, fonts } = require('./util.js')
+const { getPdfInfo, formatTitle, loadCookieJar, addPageNumbers, fonts } = require('./util.js')
 const { generateToc } = require('./toc.js')
 
 program.version('0.0.1')
@@ -84,7 +84,7 @@ program
       await new Promise((resolve) => stream.on('finish', resolve))
 
       // Collect add this book to table of contents
-      toc.push({ name: name, pages: getPageLength(filename) })
+      toc.push({ name: name, pages: (await getPdfInfo(filename)).numPages })
 
       toMerge.push(titleFilename)
       toMerge.push(filename)
@@ -101,7 +101,11 @@ program
     for (const filename of toMerge) {
       merger.add(filename)
     }
-    await merger.save(options.out || 'merged.pdf')
+    const mergedPdfName = 'merged-no-numbered.pdf'
+    await merger.save(mergedPdfName)
+    cleanup.push(mergedPdfName)
+
+    await addPageNumbers(mergedPdfName, options.out || 'merged.pdf')
 
     // Cleanup old pdfs and shut down
     cleanup.map((fn) => { return fs.unlinkSync(fn) })

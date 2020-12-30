@@ -2,6 +2,7 @@ const pdfjsLib = require('pdfjs-dist/es5/build/pdf.js')
 const fs = require('fs')
 const path = require('path')
 const { CookieMap } = require('cookiefile')
+const HummusRecipe = require('hummus-recipe')
 
 const fonts = {
   Roboto: {
@@ -19,12 +20,19 @@ const fonts = {
  * Returns the page length of the given PDF file
  * @param {String} filename
  */
-async function getPageLength (filename) {
+async function getPdfInfo (filename) {
   const data = fs.readFileSync(filename)
   const loadingTask = pdfjsLib.getDocument(data)
 
   const pdf = await loadingTask.promise
-  return pdf.numPages
+  const page = await pdf.getPage(1)
+  return {
+    numPages: pdf.numPages,
+    size: {
+      width: page.view[2],
+      height: page.view[3]
+    }
+  }
 }
 
 /**
@@ -56,6 +64,28 @@ function loadCookieJar (cookieFile) {
   return cookieList
 }
 
+/**
+ * Adds page numbers to given pdf file. Skips first page assuming it is a table of contents
+ * @param {String} inputFile - Filename of input file
+ * @param {String} outputFile - Filename of output file
+ */
+async function addPageNumbers (inputFile, outputFile) {
+  const pdfDoc = new HummusRecipe(inputFile, outputFile)
+  const pdfInfo = await getPdfInfo(inputFile)
+  const styles = {
+    fontSize: 10,
+    font: 'Times New Roman',
+    color: '#000000'
+  }
+  for (let pageNum = 2; pageNum <= pdfInfo.numPages; pageNum++) {
+    pdfDoc.editPage(pageNum)
+      .text(String(pageNum - 1), 10, pdfInfo.size.height - 15, styles)
+      .text(String(pageNum - 1), pdfInfo.size.width - 15, pdfInfo.size.height - 15, styles)
+      .endPage()
+  }
+  pdfDoc.endPDF()
+}
+
 module.exports = {
-  fonts, getPageLength, formatTitle, loadCookieJar
+  fonts, getPdfInfo, formatTitle, loadCookieJar, addPageNumbers
 }
