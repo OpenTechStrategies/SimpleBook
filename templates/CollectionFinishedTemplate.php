@@ -45,10 +45,6 @@ class CollectionFinishedTemplate extends QuickTemplate {
 			}
 		}
 
-		if ( $notes !== '' || $this->data['is_cached'] ) {
-			echo wfMessage( 'coll-rendering_finished_notes_heading' )->parseAsBlock();
-		}
-
 		if ( $notes !== '' ) {
 			echo Html::rawElement( 'ul', [], $notes );
 		}

@@ -1,17 +1,18 @@
 {
-	"name": "Collection",
+	"name": "SimpleBook",
 	"version": "1.8.0",
 	"author": [
 		"PediaPress GmbH",
 		"Siebrand Mazeland",
-		"Marcin Cieślak"
+		"Marcin Cieślak",
+		"Open Tech Strategies"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:Collection",
 	"descriptionmsg": "coll-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.34.0"
+		"MediaWiki": ">= 1.33.0"
 	},
 	"callback": "CollectionHooks::registerExtension",
 	"AvailableRights": [
@@ -47,18 +48,23 @@
 		"CollectionSuggestTemplate": "templates/CollectionSuggestTemplate.php",
 		"CollectionRenderingAPI": "includes/rendering/CollectionRenderingAPI.php",
 		"MWServeRenderingAPI": "includes/rendering/MWServeRenderingAPI.php",
+		"MWPDFRenderingAPI": "includes/rendering/MWPDFRenderingAPI.php",
 		"CollectionAPIResult": "includes/rendering/CollectionAPIResult.php"
 	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extensions\\Collection\\": "includes/"
 	},
 	"ResourceModules": {
+		"ext.jqueryui": {
+			"scripts": "ext.collection.jqueryui/jquery-ui.min.js",
+			"styles": "ext.collection.jqueryui/jquery-ui.min.css"
+		},
 		"ext.collection": {
 			"scripts": "ext.collection/collection.js",
 			"dependencies": [
 				"ext.collection.bookcreator",
-				"jquery.ui",
-				"mediawiki.language"
+				"mediawiki.language",
+				"ext.jqueryui"
 			]
 		},
 		"ext.collection.bookcreator.styles": {
@@ -188,25 +194,6 @@
 						"coll-setting-papersize-a4": "a4",
 						"coll-setting-papersize-letter": "letter"
 					}
-				},
-				"toc": {
-					"type": "select",
-					"label-message": "coll-setting-toc",
-					"default": "auto",
-					"options": {
-						"coll-setting-toc-auto": "auto",
-						"coll-setting-toc-yes": "yes",
-						"coll-setting-toc-no": "no"
-					}
-				},
-				"columns": {
-					"type": "select",
-					"label-message": "coll-setting-columns",
-					"default": "2",
-					"options": {
-						"coll-setting-columns-1": "1",
-						"coll-setting-columns-2": "2"
-					}
 				}
 			}
 		},
@@ -255,9 +242,7 @@
 		},
 		"CollectionShowRenderNotes": {
 			"description": "Optional notes that are displayed on the download screen for the rendered document. Each entry is a message key",
-			"value": [
-				"coll-rendering_finished_note_not_satisfied"
-			]
+			"value": []
 		},
 		"CollectionDisableDownloadSection": {
 			"description": "Disable the download section see https://phabricator.wikimedia.org/T175996",

@@ -132,8 +132,6 @@ class BookRendererTest extends MediaWikiTestCase {
 			'subtitle' => $subtitle,
 			'settings' => [
 				'papersize' => 'a4',
-				'toc' => 'auto',
-				'columns' => '2',
 			],
 			'items' => [],
 		];
