@@ -1143,7 +1143,8 @@ class SpecialCollection extends SpecialPage {
 
 		switch ( $result->get( 'state' ) ) {
 			case 'pending':
-            case 'started':
+			case 'started':
+			case 'queued':
 			case 'progress':
 				$out->addHeadItem(
 					'refresh-nojs',
