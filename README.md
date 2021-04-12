@@ -49,12 +49,11 @@ yarn install
 cd ../../../
 ```
 
-## Running
+## Running in development
 
 In order for the plugin to work you will need to install it to your wiki and also run the flask service.
 
 ### Running the flask service
-
 From project root
 
 ```
@@ -71,6 +70,16 @@ From project root
 ```
 cd services/api
 pipenv run rq worker
+```
+
+## Running on production
+
+When running in production you should use your preferred process control tool (e.g. [supervisor](http://supervisord.org/)) to run the Flask service and queue workers.
+
+In production, Flask should be invoked via gunicorn using a command like:
+
+```
+pipenv run gunicorn --bind 127.0.0.1:3333 wsgi:app
 ```
 
 ## Contact
