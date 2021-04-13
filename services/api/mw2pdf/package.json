@@ -13,10 +13,12 @@
     "commander": "^6.2.0",
     "cookiefile": "^1.0.10",
     "hummus-recipe": "^2.0.0",
+    "node-fetch": "^2.6.1",
     "pdf-merger-js": "^3.0.5",
     "pdfjs-dist": "^2.5.207",
     "pdfmake": "^0.1.68",
     "puppeteer": "^5.5.0",
     "tough-cookie": "^4.0.0"
+    "uuid": "^8.3.2"
   }
 }
