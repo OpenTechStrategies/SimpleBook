@@ -1,115 +1,32 @@
-const puppeteer = require('puppeteer')
-const fs = require('fs')
-const PDFMerger = require('pdf-merger-js')
-const PdfPrinter = require('pdfmake')
-const { program } = require('commander')
-const { getPdfInfo, formatTitle, loadCookieJar, addPageNumbers, fonts } = require('./util.js')
-const { generateToc } = require('./toc.js')
+import fs from 'fs'
+import program from 'commander'
+import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki.js'
+import { MediaWikiSession } from './classes/MediaWikiSession.js'
 
 program.version('0.0.1')
-
 program
-  .command('pdf <url> [urls...]')
+  .command('pdf <urls...>')
   .description('creates a pdf consisting of the combined urls (comma separated)')
-  .option('--cookie-jar [path]', 'Path to cookies jar')
-  .option('--cookie-json [path]', 'Path to cookies json file')
-  .option('--title [title]', 'Title of book')
-  .option('--subtitle [subtitle]', 'Title of book')
-  .option('--out [file]', 'name of output file')
-  .action(async (url, urls, options) => {
-    const browser = await puppeteer.launch(
-      { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
-    )
-    const merger = new PDFMerger()
-    const toMerge = []
-    const cleanup = []
-    const toc = []
-    const title = options.title || 'Proposal Book'
-    const subtitle = options.subtitle || 'Table of Contents'
-    urls = [url, ...urls] || [url]
-    let cookies
+  .requiredOption('-o, --out <path>', 'path to the output file')
+  .option('--title <string>', 'Title of book', 'Proposal Book')
+  .option('--subtitle <string>', 'Subtitle of book', 'Table of Contents')
+  .option('--mwUsername <string>', 'The username to log in with', '')
+  .option('--mwPassword <string>', 'The password to log in with', '')
+  .action(async (urls, options) => {
+    const mediaWikiSession = new MediaWikiSession()
 
-    if (typeof options.cookieJson !== 'undefined') {
-      cookies = JSON.parse(fs.readFileSync(options.cookieJson))
-    } else if (typeof options.cookieJar !== 'undefined') {
-      cookies = loadCookieJar(options.cookieJar)
+    // Authenticate
+    if (options.mwUsername !== ''
+      && options.mwPassword !== '') {
+      const apiUrl = getApiUrlFromMediaWikiUrl(urls[0])
+      await mediaWikiSession.authenticate(
+        options.mwUsername,
+        options.mwPassword,
+        apiUrl,
+      )
     }
 
-    // Parse each page into it's own into a pdf file
-    for (const [i, url] of urls.entries()) {
-      const filename = `./${i}.pdf`
-      const titleFilename = `title-${i}.pdf`
-      const name = formatTitle(new URL(url).pathname.split('/').slice(-1).pop())
-      const page = await browser.newPage()
-
-      // Set cookies if given any
-      if (typeof cookies !== 'undefined') {
-        for (const cookie of cookies) {
-          await page.setCookie(cookie)
-        }
-      }
-
-      await page.goto(url, { waitUntil: 'networkidle2' })
-      await page.pdf({ path: filename, format: 'A4' })
-
-      // Generate title page for this url
-      const separatorScaffold = {
-        content: [
-          {
-            stack: [
-              name,
-              { text: `Proposal #${i}`, style: 'subheader' }
-            ],
-            style: 'header'
-          }
-
-        ],
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            alignment: 'center',
-            margin: [0, 50, 0, 80]
-          },
-          subheader: {
-            fontSize: 14
-          }
-        }
-      }
-
-      const printer = new PdfPrinter(fonts)
-      const pdfDoc = printer.createPdfKitDocument(separatorScaffold)
-      const stream = pdfDoc.pipe(fs.createWriteStream(titleFilename))
-      pdfDoc.end()
-      await new Promise((resolve) => stream.on('finish', resolve))
-
-      // Collect add this book to table of contents
-      toc.push({ name: name, pages: (await getPdfInfo(filename)).numPages })
-
-      toMerge.push(titleFilename)
-      toMerge.push(filename)
-      cleanup.push(titleFilename)
-      cleanup.push(filename)
-    }
-    // Generate table of contents page
-    await generateToc(title, subtitle, toc)
-
-    toMerge.unshift(`toc-${title}.pdf`)
-    cleanup.push(`toc-${title}.pdf`)
-
-    // Merge new pdfs into single file
-    for (const filename of toMerge) {
-      merger.add(filename)
-    }
-    const mergedPdfName = 'merged-no-numbered.pdf'
-    await merger.save(mergedPdfName)
-    cleanup.push(mergedPdfName)
-
-    await addPageNumbers(mergedPdfName, options.out || 'merged.pdf')
-
-    // Cleanup old pdfs and shut down
-    cleanup.map((fn) => { return fs.unlinkSync(fn) })
-    browser.close()
+    const pdfBooklet = await mediaWikiSession.makePdfBooklet(urls)
   })
 
 program.parseAsync(process.argv)

@@ -1,20 +1,23 @@
-import { v4 as uuidv4 } from 'uuid'
 import puppeteer from 'puppeteer'
-
+import {
+  PdfGenerator
+} from './PdfGenerator.js'
 import {
   makeLoginRequest,
   makeLoginTokenRequest,
   extractLoginToken,
 } from '../utils/mediaWiki.js'
-
 import {
   parseCookies,
   toCookieString,
 } from '../utils/cookies.js'
+import {
+  deletePdfs,
+} from '../utils/files.js'
 
 export class MediaWikiSession {
   constructor(settings) {
-  	this.cookies = {}
+    this.cookies = {}
   }
 
   isAuthenticated(domain) { return (domain in this.cookies) }
@@ -33,10 +36,10 @@ export class MediaWikiSession {
    * If the authentication has already occurred for a given domain, this will NOT re-authenticate.
    */
   async authenticate(username, password, apiUrl) {
-  	const { host: domain } = new URL(apiUrl)
-  	if (this.isAuthenticated(domain)) {
-  		return true
-  	}
+    const { host: domain } = new URL(apiUrl)
+    if (this.isAuthenticated(domain)) {
+      return true
+    }
 
     // Step 1: Generate a login token
     const loginTokenRequest = await makeLoginTokenRequest(apiUrl)
@@ -52,23 +55,74 @@ export class MediaWikiSession {
       cookies: authCookies,
     })
     this.setCookies(
-    	domain,
-    	parseCookies(domain, loginRequest),
+      domain,
+      parseCookies(domain, loginRequest),
     )
     return true
   }
 
-  async generatePdf(url, tmpDirectory = './') {
+  async makePdf(url, tmpDirectory = './', includeTitlePage = false) {
+    const pdfGenerator = new PdfGenerator(tmpDirectory)
     const browser = await puppeteer.launch(
       { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
     )
     const page = await browser.newPage()
-    const pdfPath = `${tmpDirectory}${uuidv4()}.pdf`
-  	const { host: domain } = new URL(url)
+    const { host: domain } = new URL(url)
     await page.setCookie(...this.getCookies(domain))
     await page.goto(url, { waitUntil: 'networkidle2' })
-    await page.pdf({ path: pdfPath, format: 'A4' })
+    const pageTitle = await page.title()
+    const pagePdf = pdfGenerator
+      .generatePdfObject({ title: pageTitle })
+    await page.pdf({ path: pagePdf.path, format: 'A4' })
     await browser.close()
-    return pdfPath
+    if (includeTitlePage === true) {
+      const titlePdf = await pdfGenerator
+        .generateTitlePagePdf(pageTitle)
+      const mergedPdf = await pdfGenerator
+        .generateMergedPdf(
+          [titlePdf, pagePdf],
+          pdfGenerator.generatePdfObject({ title: pageTitle }),
+        )
+      await deletePdfs([titlePdf, pagePdf])
+      return mergedPdf
+    }
+    return pagePdf
+  }
+
+  async makePdfBooklet(urls, tmpDirectory = './') {
+    const pdfGenerator = new PdfGenerator(tmpDirectory)
+    // Generate temporary pdfs for each URL
+    const pagePdfs = await Promise.all(
+      urls.map(async (url) => this.makePdf(url, tmpDirectory, true)),
+    )
+
+    // Merge the pdf pages
+    const mergedPagesPdf = await pdfGenerator
+      .generateMergedPdf(pagePdfs)
+
+    // Add page numbers
+    const numberedPagesPdf = await pdfGenerator
+      .generatePdfWithPageNumbers(mergedPagesPdf)
+
+    // Generate the table of contents
+    const tableOfContentsPdf = await pdfGenerator
+      .generateTableOfContentsPdf(pagePdfs)
+
+    // Merge the final pdf
+    const finalPdf = await pdfGenerator
+      .generateMergedPdf([
+        tableOfContentsPdf,
+        numberedPagesPdf,
+      ])
+
+    // Clean up temporary pdfs
+    await deletePdfs([
+      ...pagePdfs,
+      mergedPagesPdf,
+      numberedPagesPdf,
+      tableOfContentsPdf,
+    ])
+
+    return finalPdf
   }
 }
