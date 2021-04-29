@@ -10,34 +10,32 @@ app = Flask(__name__)
 q = Queue(connection=conn)
 
 
-def print_to_pdf(urls, title, subtitle):
+def print_to_pdf(urls, passthrough_parameters, username, password):
     job = get_current_job()
-    subprocess.call(["sh", "mw2pdf/get-cookies.sh"])
     subprocess.call(
         [
             "node",
             "mw2pdf/index.js",
             "pdf",
-            "--cookie-jar",
-            "cookies.jar",
             "--out",
             f"./{job.id}.pdf",
-            "--title",
-            title,
-            "--subtitle",
-            subtitle,
+            "--mwUsername",
+            username,
+            "--mwPassword",
+            password,
+            "--passthroughParameters",
+            passthrough_parameters,
             *urls,
         ]
     )
     return
 
 
-def render_book():
-    book = json.loads(request.form["metabook"])
-    urls = list(map(lambda i: i["url"], book["items"]))
+def render_book(book_data, passthrough_parameters, username, password):
+    urls = list(map(lambda i: i["url"], book_data["items"]))
     job = q.enqueue_call(
         func=print_to_pdf,
-        args=(urls, book["title"], book["subtitle"]),
+        args=( urls, passthrough_parameters, username, password ),
         result_ttl=10000,
     )
     return {"collection_id": job.get_id(), "is_cached": False}
@@ -55,7 +53,12 @@ def render_status():
 @app.route("/", methods=["POST"])
 def process_command():
     if request.form["command"] == "render":
-        return render_book()
+        return render_book(
+            json.loads(request.form['metabook']),
+            request.form['passthrough_parameters'],
+            request.form['login_credentials[username]'],
+            request.form['login_credentials[password]'],
+        )
     elif request.form["command"] == "render_status":
         return render_status()
 
