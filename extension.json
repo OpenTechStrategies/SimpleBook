@@ -124,12 +124,16 @@
 		"OutputPageCheckLastModified": "CollectionHooks::checkLastModified"
 	},
 	"config": {
-		"CollectionMWServeURL": {
+		"SimpleBookPassthroughParameters": {
+			"description": "Dictionary of key / value pairs to be passed back to this MediaWiki as part of any rendering requests",
+			"value": null
+		},
+		"SimpleBookRenderingApiUrl": {
 			"description": "URL of mw-serve render server",
 			"value": "https://tools.pediapress.com/mw-serve/"
 		},
-		"CollectionMWServeCredentials": {
-			"description": "Login credentials to this MediaWiki as 'USERNAME:PASSWORD' string",
+		"SimpleBookRenderingCredentials": {
+			"description": "Login credentials to this MediaWiki as an object with `username` and `password` properties",
 			"value": null
 		},
 		"CollectionMWServeCert": {
