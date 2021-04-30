@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'url'
+import path from 'path'
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import PdfMerger from 'pdf-merger-js'
@@ -8,6 +10,11 @@ import {
   StandardFonts,
 } from 'pdf-lib'
 import { Pdf } from './Pdf.js'
+
+// The below two lines are from
+// https://stackoverflow.com/questions/32705219/nodejs-accessing-file-with-relative-path/32707530#32707530
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class PdfGenerator {
   constructor(directory = '') {
@@ -115,13 +122,13 @@ export class PdfGenerator {
   async generatePdfFromScaffold(scaffold, outPdf = this.generatePdfObject()) {
     const printer = new PdfPrinter({
       Roboto: {
-        normal: 'fonts/Roboto-Regular.ttf',
-        bold: 'fonts/Roboto-Medium.ttf',
-        italics: 'fonts/Roboto-Italic.ttf',
-        bolditalics: 'fonts/Roboto-MediumItalic.ttf',
+        normal: path.join(__dirname, '../fonts/Roboto-Regular.ttf'),
+        bold: path.join(__dirname, '../fonts/Roboto-Medium.ttf'),
+        italics: path.join(__dirname, '../fonts/Roboto-Italic.ttf'),
+        bolditalics: path.join(__dirname, '../fonts/Roboto-MediumItalic.ttf'),
       },
       SourceCodePro: {
-        normal: 'fonts/SourceCodePro-Regular.ttf',
+        normal: path.join(__dirname, '../fonts/SourceCodePro-Regular.ttf'),
       }
     })
     // TODO: what is .end doing in this block -- is it sync? does it have to be called?
