@@ -7,23 +7,33 @@
  */
 class MWPDFRenderingAPI extends CollectionRenderingAPI {
 	protected function makeRequest( $command, array $params ) {
-        $params['command'] = $command;
-        $serveURL = "http://localhost:3333/";
+		global $wgSimpleBookPassthroughParameters,
+			$wgSimpleBookRenderingApiUrl,
+			$wgSimpleBookRenderingCredentials;
 
-		if ( !$serveURL ) {
-			wfDebugLog( 'collection', 'The mwlib/OCG render server URL isn\'t configured.' );
+		$params['command'] = $command;
 
+		if ( !$wgSimpleBookRenderingApiUrl ) {
+			wfDebugLog( 'collection', 'The SimpleBook rendering API URL isn\'t configured.' );
 			return new CollectionAPIResult( null );
 		}
 
+		if ( $wgSimpleBookRenderingCredentials ) {
+			$params['login_credentials'] = $wgSimpleBookRenderingCredentials;
+		}
+
+		if ( $wgSimpleBookPassthroughParameters ) {
+			$params['passthrough_parameters'] = json_encode($wgSimpleBookPassthroughParameters);
+		}
+
 		$response = Http::post(
-			$serveURL,
+			$wgSimpleBookRenderingApiUrl,
 			[ 'postData' => $params ],
 			__METHOD__
 		);
 
 		if ( $response === false ) {
-			wfDebugLog( 'collection', "Request to $serveURL resulted in error" );
+			wfDebugLog( 'collection', "Request to $wgSimpleBookRenderingApiUrl resulted in error" );
 		}
 
 		return new CollectionAPIResult( $response );
