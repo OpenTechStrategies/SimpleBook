@@ -12,22 +12,27 @@ q = Queue(connection=conn)
 
 def print_to_pdf(urls, passthrough_parameters, username, password):
     job = get_current_job()
-    subprocess.call(
-        [
-            "node",
-            "mw2pdf/index.js",
-            "pdf",
-            "--out",
-            f"./{job.id}.pdf",
+    params = [
+        "node",
+        "mw2pdf/index.js",
+        "pdf",
+        "--out",
+        f"./{job.id}.pdf",
+    ]
+    if username and password:
+        params.extend([
             "--mwUsername",
             username,
             "--mwPassword",
             password,
+        ])
+    if passthrough_parameters:
+        params.extend([
             "--passthroughParameters",
             passthrough_parameters,
-            *urls,
-        ]
-    )
+        ])
+    params.extend(urls)
+    subprocess.call(params)
     return
 
 
