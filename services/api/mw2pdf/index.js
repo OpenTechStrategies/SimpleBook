@@ -2,6 +2,7 @@ import fs from 'fs'
 import program from 'commander'
 import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki.js'
 import { MediaWikiSession } from './classes/MediaWikiSession.js'
+import { updateUrlParameters } from './utils/url.js'
 
 program.version('0.0.1')
 program
@@ -12,9 +13,9 @@ program
   .option('--subtitle <string>', 'Subtitle of book', 'Table of Contents')
   .option('--mwUsername <string>', 'The username to log in with', '')
   .option('--mwPassword <string>', 'The password to log in with', '')
+  .option('--passthroughParameters <string>', 'a json encoded string containing data to pass via querystring with each request', '')
   .action(async (urls, options) => {
     const mediaWikiSession = new MediaWikiSession()
-
     // Authenticate
     if (options.mwUsername !== ''
       && options.mwPassword !== '') {
@@ -26,7 +27,15 @@ program
       )
     }
 
-    const pdfBooklet = await mediaWikiSession.makePdfBooklet(urls)
+    // Process passthrough parameters
+    let processedUrls = urls
+    if (options.passthroughParameters) {
+      const passthroughParameters = JSON.parse(options.passthroughParameters)
+      processedUrls = processedUrls.map(
+        (url) => updateUrlParameters(url, passthroughParameters),
+      )
+    }
+    const pdfBooklet = await mediaWikiSession.makePdfBooklet(processedUrls)
   })
 
 program.parseAsync(process.argv)
