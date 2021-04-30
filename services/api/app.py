@@ -4,6 +4,10 @@ from flask import Flask, request, send_file
 from rq import Queue, get_current_job
 from rq.job import Job
 from worker import conn
+import logging
+import sys
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 app = Flask(__name__)
