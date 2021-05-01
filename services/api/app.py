@@ -18,7 +18,7 @@ def print_to_pdf(urls, passthrough_parameters, username, password):
     job = get_current_job()
     params = [
         "node",
-        "mw2pdf/index.js",
+        "mw2pdf/built/main.js",
         "pdf",
         "--out",
         f"./{job.id}.pdf",

@@ -4,7 +4,7 @@ export function updateUrlParameters(urlString, parameters) {
   Object.entries(parameters).forEach(
     ([key, value]) => url.searchParams.set(
       key,
-      value,
+      String(value),
     ),
   )
   return url.toString()

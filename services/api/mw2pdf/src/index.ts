@@ -1,10 +1,9 @@
-import fs from 'fs'
 import program from 'commander'
 import Joi from 'joi'
-import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki.js'
-import { MediaWikiSession } from './classes/MediaWikiSession.js'
-import { updateUrlParameters } from './utils/url.js'
-import { assertValidPassthroughParameters } from './utils/validation.js'
+import { updateUrlParameters } from './utils/url'
+import { assertValidPassthroughParameters } from './utils/validation'
+import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki'
+import { MediaWikiSession } from './classes/MediaWikiSession'
 
 program.version('0.0.1')
 program
