@@ -1,8 +1,10 @@
 import fs from 'fs'
 import program from 'commander'
+import Joi from 'joi'
 import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki.js'
 import { MediaWikiSession } from './classes/MediaWikiSession.js'
 import { updateUrlParameters } from './utils/url.js'
+import { assertValidPassthroughParameters } from './utils/validation.js'
 
 program.version('0.0.1')
 program
@@ -30,10 +32,26 @@ program
     // Process passthrough parameters
     let processedUrls = urls
     if (options.passthroughParameters) {
-      const passthroughParameters = JSON.parse(options.passthroughParameters)
-      processedUrls = processedUrls.map(
-        (url) => updateUrlParameters(url, passthroughParameters),
-      )
+      try {
+        assertValidPassthroughParameters(options.passthroughParameters)
+      } catch (e) {
+        if (e instanceof Joi.ValidationError) {
+          console.log(e.details)
+        } else {
+          console.log(`Parameter decoration failed. (${e.message}`)
+        }
+        return
+      }
+
+      try {
+        const passthroughParameters = JSON.parse(options.passthroughParameters)
+        processedUrls = processedUrls.map(
+          (url) => updateUrlParameters(url, passthroughParameters),
+        )
+      } catch (e) {
+        console.log(`Parameter decoration failed. (${e.message}`)
+        return
+      }
     }
     const pdfBooklet = await mediaWikiSession.makePdfBooklet(processedUrls)
   })
