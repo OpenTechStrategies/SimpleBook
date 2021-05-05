@@ -29,7 +29,7 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"CollectionAlias": "Collection.alias.php"
+		"SimpleBookAlias": "SimpleBook.alias.php"
 	},
 	"AutoloadClasses": {
 		"SpecialCollection": "includes/Specials/SpecialCollection.php",
