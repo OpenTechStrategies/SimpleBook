@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Collection Extension for MediaWiki
+ * SimpleBook Extension for MediaWiki
  *
  * Copyright (C) PediaPress GmbH
  *
@@ -22,16 +22,16 @@
  */
 
 if ( function_exists( 'wfLoadExtension' ) ) {
-	wfLoadExtension( 'Collection' );
+	wfLoadExtension( 'SimpleBook' );
 	// Keep i18n globals so mergeMessageFileList.php doesn't break
-	$wgMessagesDirs['Collection'] = __DIR__ . '/i18n';
+	$wgMessagesDirs['SimpleBook'] = __DIR__ . '/i18n';
 
-	$wgExtensionMessagesFiles['CollectionAlias'] = __DIR__ . '/Collection.alias.php';
+	$wgExtensionMessagesFiles['SimpleBookAlias'] = __DIR__ . '/SimpleBook.alias.php';
 	wfWarn(
-		'Deprecated PHP entry point used for Collection extension. Please use wfLoadExtension ' .
+		'Deprecated PHP entry point used for SimpleBook extension. Please use wfLoadExtension ' .
 		'instead, see https://www.mediawiki.org/wiki/Extension_registration for more details.'
 	);
 	return true;
 } else {
-	die( 'This version of the Collection extension requires MediaWiki 1.34+' );
+	die( 'This version of the SimpleBook extension requires MediaWiki 1.34+' );
 }
