@@ -12,6 +12,7 @@
   "dependencies": {
     "commander": "^6.2.0",
     "cookiefile": "^1.0.10",
+    "joi": "^17.4.0",
     "node-fetch": "^2.6.1",
     "pdf-lib": "^1.16.0",
     "pdf-merger-js": "^3.0.5",
