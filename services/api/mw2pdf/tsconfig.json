@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "outDir": "compiled/",
+    "strict": false,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "module": "esnext",
+    "lib": ["dom", "es2016"],
+    "sourceMap": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src",
+    "src/classes",
+    "src/utils"
+  ],
+  "exclude": [
+    "node_modules",
+    "built",
+    ".git"
+  ]
+}

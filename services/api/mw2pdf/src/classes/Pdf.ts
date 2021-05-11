@@ -1,7 +1,10 @@
 import fs from 'fs'
-import pdfjsLib from 'pdfjs-dist/es5/build/pdf.js'
+import { getDocument } from 'pdfjs-dist/es5/build/pdf'
 
 export class Pdf {
+
+  path: any;
+
   constructor(path, {
     title = '',
   } = {}) {
@@ -16,7 +19,7 @@ export class Pdf {
 
   async getInfo() {
     const data = fs.readFileSync(this.path)
-    const pdf = await (pdfjsLib.getDocument(data).promise)
+    const pdf = await (getDocument(data).promise)
     const page = await pdf.getPage(1)
     return {
       numPages: pdf.numPages,

@@ -1,22 +1,25 @@
 import puppeteer from 'puppeteer'
 import {
   PdfGenerator
-} from './PdfGenerator.js'
+} from './PdfGenerator'
 import {
   makeLoginRequest,
   makeLoginTokenRequest,
   extractLoginToken,
-} from '../utils/mediaWiki.js'
+} from '../utils/mediaWiki'
 import {
   parseCookies,
   toCookieString,
-} from '../utils/cookies.js'
+} from '../utils/cookies'
 import {
   deletePdfs,
-} from '../utils/files.js'
+} from '../utils/files'
 
 export class MediaWikiSession {
-  constructor(settings) {
+
+  cookies: any;
+
+  constructor(settings?: any) {
     this.cookies = {}
   }
 

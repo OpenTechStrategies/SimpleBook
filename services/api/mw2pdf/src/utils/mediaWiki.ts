@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { toCookieString } from './cookies.js'
+import { toCookieString } from './cookies'
 
 export async function makeLoginTokenRequest(apiUrl) {
   const loginTokenRequestParams = new URLSearchParams({
@@ -27,11 +27,11 @@ export async function extractLoginToken(loginTokenRequestResult) {
 }
 
 export async function makeLoginRequest({
-  apiUrl,
-  username,
-  password,
-  loginToken,
-  cookies,
+  apiUrl = "",
+  username = "",
+  password = "",
+  loginToken = "",
+  cookies = "",
 } = {}) {
   const loginActionRequestBody = new URLSearchParams({
     format: 'json',
