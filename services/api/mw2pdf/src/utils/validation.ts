@@ -1,6 +1,6 @@
 import Joi from 'joi'
 
-function isObject(value) {
+function isObject(value: Object): boolean {
   return (typeof value === 'object' && value !== null)
 }
 
@@ -32,7 +32,15 @@ const passthroughParametersSchema = Joi.object()
     )
   )
 
-export function assertValidPassthroughParameters(passthroughParameters) {
+/**
+ *
+ * Assert that "passthrough parameters" (parameters that will be passed directly to
+ * MediaWiki on all API operations) are validly formatted JSON.
+ *
+ * @param passthroughParameters A JSON-formatted string of parameters from the CLI user
+ * that will be "passed through" to MediaWiki on any API operations.
+ */
+export function assertValidPassthroughParameters(passthroughParameters: string): void {
   Joi.assert(
     passthroughParameters,
     validJsonStringSchema,
