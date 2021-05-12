@@ -65,7 +65,17 @@ program
         return
       }
     }
-    const pdfBooklet = await mediaWikiSession.makePdfBooklet(processedUrls)
+    /**
+     * Get down to the business of making a PDF booklet from the URLs
+     * that the user listed.
+     */
+    const pdfBookletOptions: MwPdfOptions = {
+      title: "Final PDF Booklet",
+      output: options.out,
+      workDirectory: "./",
+      makeTitlePage: true,
+    }
+    await mediaWikiSession.makePdfBooklet(urls, pdfBookletOptions)
   })
 
 program.parseAsync(process.argv)
