@@ -1,5 +1,11 @@
-import fs from 'fs'
+import type { Pdf } from "src/classes/Pdf"
 
-export async function deletePdfs(pdfs) {
-  await Promise.all(pdfs.map(async (pdf) => pdf.delete()))
+/**
+ *
+ * Delete PDFs
+ *
+ * @param pdfs An array of [[Pdf]]s to delete.
+ */
+export async function deletePdfs(pdfs: Array<Pdf>): Promise<void> {
+  await Promise.all(pdfs.map(async (pdf: Pdf) => pdf.delete()))
 }

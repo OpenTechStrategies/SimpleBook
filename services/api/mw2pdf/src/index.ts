@@ -1,9 +1,18 @@
 import program from 'commander'
 import Joi from 'joi'
-import { updateUrlParameters } from './utils/url'
+import { updateUrlParameters, urlStringsToUrls } from './utils/url'
 import { assertValidPassthroughParameters } from './utils/validation'
 import { getApiUrlFromMediaWikiUrl } from './utils/mediaWiki'
-import { MediaWikiSession } from './classes/MediaWikiSession'
+import { MediaWikiSession, MwPdfOptions } from './classes/MediaWikiSession'
+
+interface CommandOptions {
+  mwUsername?: string
+  mwPassword?: string
+  title: string
+  subtitle: string
+  passthroughParameters: string
+  out: string
+}
 
 program.version('0.0.1')
 program
@@ -15,21 +24,25 @@ program
   .option('--mwUsername <string>', 'The username to log in with', '')
   .option('--mwPassword <string>', 'The password to log in with', '')
   .option('--passthroughParameters <string>', 'a json encoded string containing data to pass via querystring with each request', '')
-  .action(async (urls, options) => {
+  .action(async (urlStrings: Array<string>, options: CommandOptions) => {
     const mediaWikiSession = new MediaWikiSession()
     // Authenticate
     if (options.mwUsername !== ''
       && options.mwPassword !== '') {
-      const apiUrl = getApiUrlFromMediaWikiUrl(urls[0])
-      await mediaWikiSession.authenticate(
+      const apiUrl = getApiUrlFromMediaWikiUrl(new URL(urlStrings[0]))
+      const authenticated = await mediaWikiSession.authenticate(
         options.mwUsername,
         options.mwPassword,
         apiUrl,
       )
+      if (!authenticated) {
+        throw new Error("Invalid authentication!")
+      }
     }
 
+    let urls: Array<URL> = urlStringsToUrls(urlStrings)
+
     // Process passthrough parameters
-    let processedUrls = urls
     if (options.passthroughParameters) {
       try {
         assertValidPassthroughParameters(options.passthroughParameters)
@@ -43,8 +56,8 @@ program
       }
 
       try {
-        const passthroughParameters = JSON.parse(options.passthroughParameters)
-        processedUrls = processedUrls.map(
+        const passthroughParameters: Object = JSON.parse(options.passthroughParameters)
+        urls = urls.map(
           (url) => updateUrlParameters(url, passthroughParameters),
         )
       } catch (e) {
@@ -52,7 +65,17 @@ program
         return
       }
     }
-    const pdfBooklet = await mediaWikiSession.makePdfBooklet(processedUrls)
+    /**
+     * Get down to the business of making a PDF booklet from the URLs
+     * that the user listed.
+     */
+    const pdfBookletOptions: MwPdfOptions = {
+      title: "Final PDF Booklet",
+      output: options.out,
+      workDirectory: "./",
+      makeTitlePage: true,
+    }
+    await mediaWikiSession.makePdfBooklet(urls, pdfBookletOptions)
   })
 
 program.parseAsync(process.argv)
