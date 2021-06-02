@@ -9,3 +9,6 @@ npm-debug.log
 venv/
 *.pdf
 *.jar
+
+# Ignore node buld outputs
+/services/api/mw2pdf/built/
