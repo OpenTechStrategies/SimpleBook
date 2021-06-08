@@ -49,7 +49,7 @@
 	}
 
 	var script_url = mw.util.wikiScript(),
-		media_path = mw.config.get( 'wgExtensionAssetsPath' ) + '/Collection/images/',
+		media_path = mw.config.get( 'wgExtensionAssetsPath' ) + '/SimpleBook/images/',
 		collapseicon = media_path + '/collapse.png',
 		expandicon = media_path + '/expand.png',
 		chapter_max_len = 200;

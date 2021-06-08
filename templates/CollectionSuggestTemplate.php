@@ -59,7 +59,7 @@ class CollectionSuggestTemplate extends QuickTemplate {
 			return "<li>" . wfMessage( 'coll-suggest_empty' )->escaped() . "</li>";
 		}
 
-		$mediapath = $wgExtensionAssetsPath . '/Collection/images/';
+		$mediapath = $wgExtensionAssetsPath . '/SimpleBook/images/';
 		$baseUrl = $wgScript . "/";
 
 		$prop = $this->data['proposals'];
@@ -102,7 +102,7 @@ class CollectionSuggestTemplate extends QuickTemplate {
 			return "<li>" . wfMessage( 'coll-suggest_empty' )->escaped() . "</li>";
 		}
 
-		$mediapath = $wgExtensionAssetsPath . '/Collection/images/';
+		$mediapath = $wgExtensionAssetsPath . '/SimpleBook/images/';
 		$out = '';
 
 		foreach ( $coll['items'] as $value ) {
