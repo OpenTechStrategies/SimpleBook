@@ -153,7 +153,7 @@ class CollectionAjaxFunctions {
 	public static function onAjaxCollectionGetPopupData( $title = '' ) {
 		global $wgExtensionAssetsPath;
 		$result = [];
-		$imagePath = "$wgExtensionAssetsPath/Collection/images";
+		$imagePath = "$wgExtensionAssetsPath/SimpleBook/images";
 		$t = Title::newFromText( $title );
 		if ( $t && $t->isRedirect() ) {
 			$wikiPage = WikiPage::factory( $t );

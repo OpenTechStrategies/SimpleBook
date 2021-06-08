@@ -11,7 +11,7 @@
  */
 class CollectionListTemplate extends QuickTemplate {
 	public function execute() {
-		$mediapath = $GLOBALS['wgExtensionAssetsPath'] . '/Collection/images/';
+		$mediapath = $GLOBALS['wgExtensionAssetsPath'] . '/SimpleBook/images/';
 		?>
 
 		<div class="collection-create-chapter-links">

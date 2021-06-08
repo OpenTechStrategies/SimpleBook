@@ -223,7 +223,7 @@ class CollectionHooks {
 		global $wgOut, $wgExtensionAssetsPath, $wgRequest;
 		$templateParser = new TemplateParser( dirname( __DIR__ ) . '/templates' );
 
-		$imagePath = "$wgExtensionAssetsPath/Collection/images";
+		$imagePath = "$wgExtensionAssetsPath/SimpleBook/images";
 		$ptext = $title->getPrefixedText();
 		$oldid = $wgRequest->getInt( 'oldid', 0 );
 		if ( $oldid == $title->getLatestRevID() ) {
@@ -264,7 +264,7 @@ class CollectionHooks {
 	public static function getBookCreatorBoxContent( Title $title, $ajaxHint = null, $oldid = null ) {
 		global $wgExtensionAssetsPath;
 
-		$imagePath = "$wgExtensionAssetsPath/Collection/images";
+		$imagePath = "$wgExtensionAssetsPath/SimpleBook/images";
 
 		return self::getBookCreatorBoxAddRemoveLink( $imagePath, $ajaxHint, $title, $oldid )
 			. self::getBookCreatorBoxShowBookLink( $imagePath, $ajaxHint )
