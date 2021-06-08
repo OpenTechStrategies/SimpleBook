@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer'
+import { PDFFormat } from 'puppeteer'
 import {
   PdfFactory
 } from './PdfFactory'
@@ -14,6 +15,9 @@ import {
 import {
   deletePdfs,
 } from '../utils/files'
+import {
+  pageSizeToPDFFormat,
+} from '../utils/validation'
 import { 
   Pdf,
   PdfConstructorOptions
@@ -32,10 +36,10 @@ export interface MwPdfOptions {
   workDirectory: string
   makeTitlePage: boolean
   title: string
+  pageSize: string
 }
 export const MwPdfMakeTitlePage: boolean = true
 export const MwPdfDoNoteMakeTitlePage: boolean = false
-
 
 export class MediaWikiSession {
 
@@ -125,7 +129,7 @@ export class MediaWikiSession {
     const pagePdf: Pdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, pageFilename))
 
     // print the visible page into a PDF
-    await page.pdf({ path: pagePdf.filename, format: 'A4' })
+    await page.pdf({ path: pagePdf.filename, format: pageSizeToPDFFormat(options.pageSize) })
 
     await browser.close()
 
@@ -137,7 +141,7 @@ export class MediaWikiSession {
     if (options.makeTitlePage) {
       const titlePagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
       const titlePagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, titlePagePdfFilename))
-      await PdfFactory.generateTitlePagePdf(pageTitle, titlePagePdf)
+      await PdfFactory.generateTitlePagePdf(pageTitle, titlePagePdf, options.pageSize)
 
       const titlePageAndPagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
       const titlePageAndPagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, titlePageAndPagePdfFilename))
@@ -162,7 +166,8 @@ export class MediaWikiSession {
           title: 'No Title',
           output: null,
           workDirectory: options.workDirectory,
-          makeTitlePage: MwPdfMakeTitlePage
+          makeTitlePage: MwPdfMakeTitlePage,
+          pageSize: options.pageSize,
         }
         return this.makePdf(url, pagePdfOptions)
       }),
@@ -181,7 +186,7 @@ export class MediaWikiSession {
     // Generate the table of contents
     const tableOfContentsPdfFilename = join(options.workDirectory, `${v4()}.pdf` )
     const tableOfContentsPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('No Title', tableOfContentsPdfFilename))
-    await PdfFactory.generateTableOfContentsPdf(pagePdfs, tableOfContentsPdf)
+    await PdfFactory.generateTableOfContentsPdf(pagePdfs, tableOfContentsPdf, options.pageSize)
 
     // Merge the TOC with the page PDFs
     const finalPdfFilename = options.output ? options.output : join(options.workDirectory, `${v4()}.pdf` )

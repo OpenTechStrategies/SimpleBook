@@ -14,7 +14,7 @@ app = Flask(__name__)
 q = Queue(connection=conn)
 
 
-def print_to_pdf(urls, passthrough_parameters, username, password):
+def print_to_pdf(urls, page_size, passthrough_parameters, username, password):
     job = get_current_job()
     params = [
         "node",
@@ -35,6 +35,12 @@ def print_to_pdf(urls, passthrough_parameters, username, password):
             "--passthroughParameters",
             passthrough_parameters,
         ])
+    if page_size:
+        params.extend([
+            "--pageSize",
+            page_size,
+        ])
+
     params.extend(urls)
     subprocess.call(params)
     return
@@ -44,7 +50,7 @@ def render_book(book_data, passthrough_parameters, username, password):
     urls = list(map(lambda i: i["url"], book_data["items"]))
     job = q.enqueue_call(
         func=print_to_pdf,
-        args=( urls, passthrough_parameters, username, password ),
+        args=( urls, book_data["papersize"], passthrough_parameters, username, password ),
         result_ttl=10000,
     )
     return {"collection_id": job.get_id(), "is_cached": False}

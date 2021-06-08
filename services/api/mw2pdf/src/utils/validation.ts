@@ -1,3 +1,4 @@
+import type { PDFFormat } from 'puppeteer'
 import Joi from 'joi'
 
 function isObject(value: Object): boolean {
@@ -50,4 +51,25 @@ export function assertValidPassthroughParameters(passthroughParameters: string):
     JSON.parse(passthroughParameters),
     passthroughParametersSchema,
   )
+}
+
+export function pageSizeToPDFFormat(pageSize: string): PDFFormat {
+  switch(pageSize.toLowerCase()) {
+    case 'a4':
+      return 'A4'
+    case 'letter':
+    default:
+      return 'Letter'
+  }
+}
+
+export function pageSizeToPdfFactoryPageSize(pageSize: string): string {
+  switch(pageSize.toLowerCase()) {
+    case 'a4':
+      return 'A4'
+    case 'letter':
+    default:
+      return 'LETTER'
+      return pageSize
+  }
 }
