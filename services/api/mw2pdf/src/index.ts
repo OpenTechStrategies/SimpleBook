@@ -12,6 +12,7 @@ interface CommandOptions {
   subtitle: string
   passthroughParameters: string
   out: string
+  pageSize: string
 }
 
 program.version('0.0.1')
@@ -23,6 +24,7 @@ program
   .option('--subtitle <string>', 'Subtitle of book', 'Table of Contents')
   .option('--mwUsername <string>', 'The username to log in with', '')
   .option('--mwPassword <string>', 'The password to log in with', '')
+  .option('--pageSize <string>', 'The target page size for the book', 'Letter')
   .option('--passthroughParameters <string>', 'a json encoded string containing data to pass via querystring with each request', '')
   .action(async (urlStrings: Array<string>, options: CommandOptions) => {
     const mediaWikiSession = new MediaWikiSession()
@@ -74,6 +76,7 @@ program
       output: options.out,
       workDirectory: "./",
       makeTitlePage: true,
+      pageSize: options.pageSize,
     }
     await mediaWikiSession.makePdfBooklet(urls, pdfBookletOptions)
   })

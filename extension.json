@@ -193,7 +193,7 @@
 				"papersize": {
 					"type": "select",
 					"label-message": "coll-setting-papersize",
-					"default": "a4",
+					"default": "letter",
 					"options": {
 						"coll-setting-papersize-a4": "a4",
 						"coll-setting-papersize-letter": "letter"

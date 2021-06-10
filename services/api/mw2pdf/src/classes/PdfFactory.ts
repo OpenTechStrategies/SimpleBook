@@ -9,6 +9,9 @@ import {
   StandardFonts,
 } from 'pdf-lib'
 import { Pdf, PdfConstructorOptions } from './Pdf'
+import {
+  pageSizeToPdfFactoryPageSize,
+} from '../utils/validation'
 
 // The below two lines are from
 // https://stackoverflow.com/questions/32705219/nodejs-accessing-file-with-relative-path/32707530#32707530
@@ -28,8 +31,9 @@ export class PdfFactory {
     return outPdf
   }
 
-  static async generateTitlePagePdf(title: string, outPdf: Pdf): Promise<void> {
+  static async generateTitlePagePdf(title: string, outPdf: Pdf, pageSize: string): Promise<void> {
     const scaffold = {
+      pageSize: pageSizeToPdfFactoryPageSize(pageSize),
       content: [
         {
           text: title,
@@ -51,7 +55,7 @@ export class PdfFactory {
     await PdfFactory.generatePdfFromScaffold(scaffold, outPdf)
   }
 
-  static async generateTableOfContentsPdf(pdfs: Array<Pdf>, outPdf: Pdf): Promise<void> {
+  static async generateTableOfContentsPdf(pdfs: Array<Pdf>, outPdf: Pdf, pageSize: string): Promise<void> {
 
     /**
      * Create a throwaway Toc datastructure to make the
@@ -90,6 +94,7 @@ export class PdfFactory {
     )
 
     const scaffold = {
+      pageSize: pageSizeToPdfFactoryPageSize(pageSize),
       content: [
         {
           text: 'Table of Contents',
