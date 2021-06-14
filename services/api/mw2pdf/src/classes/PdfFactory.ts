@@ -26,12 +26,21 @@ export class PdfFactory {
 
   static async generateMergedPdf(pdfs: Array<Pdf>, outPdf: Pdf): Promise<Pdf> {
     const merger = new PdfMerger()
-    pdfs.forEach(pdf => merger.add(pdf.filename))
+    pdfs.forEach(pdf => {
+      if (pdf !== null) {
+        merger.add(pdf.filename)
+      }
+    })
     await merger.save(outPdf.filename)
     return outPdf
   }
 
-  static async generateTitlePagePdf(title: string, outPdf: Pdf, pageSize: string): Promise<void> {
+  static async generateTitlePagePdf(
+    title: string,
+    subtitle: string,
+    outPdf: Pdf,
+    pageSize: string,
+  ): Promise<void> {
     const scaffold = {
       pageSize: pageSizeToPdfFactoryPageSize(pageSize),
       content: [
@@ -39,16 +48,22 @@ export class PdfFactory {
           text: title,
           style: 'header',
         },
+        {
+          text: subtitle,
+          style: 'subheader',
+        },
       ],
       styles: {
         header: {
-          fontSize: 18,
+          fontSize: 32,
           bold: true,
           alignment: 'center',
-          margin: [0, 50, 0, 80],
+          margin: [0, 300, 0, 0],
         },
         subheader: {
-          fontSize: 14,
+          alignment: 'center',
+          fontSize: 18,
+          margin: [0, 10, 0, 0],
         },
       },
     }

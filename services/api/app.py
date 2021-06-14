@@ -14,12 +14,24 @@ app = Flask(__name__)
 q = Queue(connection=conn)
 
 
-def print_to_pdf(urls, page_size, passthrough_parameters, username, password):
+def print_to_pdf(
+    urls,
+    page_size,
+    title,
+    subtitle,
+    passthrough_parameters,
+    username,
+    password,
+):
     job = get_current_job()
     params = [
         "node",
         "mw2pdf/built/main.js",
         "pdf",
+        "--title",
+        title,
+        "--subtitle",
+        subtitle,
         "--out",
         f"./{job.id}.pdf",
     ]
@@ -46,11 +58,24 @@ def print_to_pdf(urls, page_size, passthrough_parameters, username, password):
     return
 
 
-def render_book(book_data, passthrough_parameters, username, password):
+def render_book(
+    book_data,
+    passthrough_parameters,
+    username,
+    password,
+):
     urls = list(map(lambda i: i["url"], book_data["items"]))
     job = q.enqueue_call(
         func=print_to_pdf,
-        args=( urls, book_data["papersize"], passthrough_parameters, username, password ),
+        args=(
+            urls,
+            book_data["papersize"],
+            book_data["title"],
+            book_data["subtitle"],
+            passthrough_parameters,
+            username,
+            password,
+        ),
         result_ttl=10000,
     )
     return {"collection_id": job.get_id(), "is_cached": False}
