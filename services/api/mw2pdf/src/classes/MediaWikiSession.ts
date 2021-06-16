@@ -36,6 +36,7 @@ export interface MwPdfOptions {
   workDirectory: string
   makeTitlePage: boolean
   title: string
+  subtitle: string
   pageSize: string
 }
 export const MwPdfMakeTitlePage: boolean = true
@@ -141,7 +142,7 @@ export class MediaWikiSession {
     if (options.makeTitlePage) {
       const titlePagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
       const titlePagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, titlePagePdfFilename))
-      await PdfFactory.generateTitlePagePdf(pageTitle, titlePagePdf, options.pageSize)
+      await PdfFactory.generateTitlePagePdf(pageTitle, '', titlePagePdf, options.pageSize)
 
       const titlePageAndPagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
       const titlePageAndPagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, titlePageAndPagePdfFilename))
@@ -163,10 +164,11 @@ export class MediaWikiSession {
     const pagePdfs: Array<Pdf> = await Promise.all(
       urls.map(async (url) => {
         const pagePdfOptions: MwPdfOptions = {
-          title: 'No Title',
+          title: '',
+          subtitle: '',
           output: null,
           workDirectory: options.workDirectory,
-          makeTitlePage: MwPdfMakeTitlePage,
+          makeTitlePage: false,
           pageSize: options.pageSize,
         }
         return this.makePdf(url, pagePdfOptions)
@@ -175,30 +177,41 @@ export class MediaWikiSession {
 
     // Merge the page PDFs
     const mergedPagesPdfFilename  = join(options.workDirectory, `${v4()}.pdf` )
-    const mergedPagesPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('No Title', mergedPagesPdfFilename))
+    const mergedPagesPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', mergedPagesPdfFilename))
     await PdfFactory.generateMergedPdf(pagePdfs, mergedPagesPdf)
 
     // Add page numbers to the merged PDF
     const numberedPagesPdfFilename = join(options.workDirectory, `${v4()}.pdf` )
-    const numberedPagesPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('No Title', numberedPagesPdfFilename))
+    const numberedPagesPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', numberedPagesPdfFilename))
     await PdfFactory.generatePdfWithPageNumbers(mergedPagesPdf, numberedPagesPdf)
 
     // Generate the table of contents
     const tableOfContentsPdfFilename = join(options.workDirectory, `${v4()}.pdf` )
-    const tableOfContentsPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('No Title', tableOfContentsPdfFilename))
+    const tableOfContentsPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', tableOfContentsPdfFilename))
     await PdfFactory.generateTableOfContentsPdf(pagePdfs, tableOfContentsPdf, options.pageSize)
+
+    // Generate the title page
+    const titlePagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
+    const titlePagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', titlePagePdfFilename))
+    await PdfFactory.generateTitlePagePdf(options.title, options.subtitle, titlePagePdf, options.pageSize)
 
     // Merge the TOC with the page PDFs
     const finalPdfFilename = options.output ? options.output : join(options.workDirectory, `${v4()}.pdf` )
     const finalPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(options.title, finalPdfFilename))
-    await PdfFactory.generateMergedPdf([tableOfContentsPdf, numberedPagesPdf], finalPdf)
+    await PdfFactory.generateMergedPdf([
+      (options.title !== '') ? titlePagePdf : null,
+      tableOfContentsPdf,
+      numberedPagesPdf,
+    ], finalPdf)
 
     // Clean up temporary PDFs
+    const cleanupPdfs =
     await deletePdfs([
       ...pagePdfs,
       mergedPagesPdf,
       numberedPagesPdf,
       tableOfContentsPdf,
+      titlePagePdf,
     ])
 
     return finalPdf
