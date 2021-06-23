@@ -94,10 +94,10 @@ def render_status():
 def process_command():
     if request.form["command"] == "render":
         return render_book(
-            json.loads(request.form['metabook']),
-            request.form['passthrough_parameters'],
-            request.form['login_credentials[username]'],
-            request.form['login_credentials[password]'],
+            json.loads(request.form.get('metabook'), ''),
+            request.form.get('passthrough_parameters', ''),
+            request.form.get('login_credentials[username]', ''),
+            request.form.get('login_credentials[password]', ''),
         )
     elif request.form["command"] == "render_status":
         return render_status()
