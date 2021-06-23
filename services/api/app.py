@@ -69,9 +69,9 @@ def render_book(
         func=print_to_pdf,
         args=(
             urls,
-            book_data["papersize"],
-            book_data["title"],
-            book_data["subtitle"],
+            book_data.get('papersize', ''),
+            book_data.get('title', ''),
+            book_data.get('subtitle', ''),
             passthrough_parameters,
             username,
             password,
