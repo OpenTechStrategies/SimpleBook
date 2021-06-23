@@ -1299,7 +1299,8 @@ class SpecialCollection extends SpecialPage {
 		$article = [
 			'type' => 'article',
 			'content_type' => 'text/x-wiki',
-			'title' => $title->getPrefixedText()
+			'title' => $title->getPrefixedText(),
+			'url' => $title->getCanonicalURL(),
 		];
 		if ( $oldid ) {
 			$article['revision'] = (string)$oldid;
