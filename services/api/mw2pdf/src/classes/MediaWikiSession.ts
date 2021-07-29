@@ -130,7 +130,7 @@ export class MediaWikiSession {
     const pagePdf: Pdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, pageFilename))
 
     // print the visible page into a PDF
-    await page.pdf({ path: pagePdf.filename, format: pageSizeToPDFFormat(options.pageSize) })
+    await page.pdf({ path: pagePdf.filename, format: pageSizeToPDFFormat(options.pageSize), printBackground: true })
 
     await browser.close()
 
@@ -146,7 +146,7 @@ export class MediaWikiSession {
 
       const titlePageAndPagePdfFilename = join(options.workDirectory, `${v4()}.pdf`)
       const titlePageAndPagePdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(pageTitle, titlePageAndPagePdfFilename))
-      await PdfFactory.generateMergedPdf([titlePagePdf, pagePdf], titlePageAndPagePdf)
+      await PdfFactory.generateMergedPdf([titlePagePdf, pagePdf], titlePageAndPagePdf, '', false)
 
       await deletePdfs([titlePagePdf, pagePdf])
 
@@ -178,7 +178,7 @@ export class MediaWikiSession {
     // Merge the page PDFs
     const mergedPagesPdfFilename  = join(options.workDirectory, `${v4()}.pdf` )
     const mergedPagesPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', mergedPagesPdfFilename))
-    await PdfFactory.generateMergedPdf(pagePdfs, mergedPagesPdf)
+    await PdfFactory.generateMergedPdf(pagePdfs, mergedPagesPdf, options.workDirectory, true)
 
     // Add page numbers to the merged PDF
     const numberedPagesPdfFilename = join(options.workDirectory, `${v4()}.pdf` )
@@ -200,9 +200,9 @@ export class MediaWikiSession {
     const finalPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions(options.title, finalPdfFilename))
     await PdfFactory.generateMergedPdf([
       (options.title !== '') ? titlePagePdf : null,
-      tableOfContentsPdf,
+      (pagePdfs.length > 1) ? tableOfContentsPdf : null,
       numberedPagesPdf,
-    ], finalPdf)
+    ], finalPdf, '', false)
 
     // Clean up temporary PDFs
     const cleanupPdfs =

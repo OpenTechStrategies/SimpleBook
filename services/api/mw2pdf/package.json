@@ -14,8 +14,10 @@
   "author": "Open Tech Strategies",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
     "commander": "^6.2.0",
     "cookiefile": "^1.0.10",
+    "dateformat": "^4.5.1",
     "joi": "^17.4.0",
     "node-fetch": "^2.6.1",
     "npm-watch": "^0.9.0",

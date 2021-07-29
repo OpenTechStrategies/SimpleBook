@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
+import dateFormat from 'dateformat'
 import PdfMerger from 'pdf-merger-js'
 import PdfPrinter from 'pdfmake'
 import {
@@ -12,6 +13,9 @@ import { Pdf, PdfConstructorOptions } from './Pdf'
 import {
   pageSizeToPdfFactoryPageSize,
 } from '../utils/validation'
+import { v4 } from 'uuid'
+import { join } from 'path'
+import fontkit from '@pdf-lib/fontkit';
 
 // The below two lines are from
 // https://stackoverflow.com/questions/32705219/nodejs-accessing-file-with-relative-path/32707530#32707530
@@ -24,13 +28,20 @@ export class PdfFactory {
     return new Pdf(options)
   }
 
-  static async generateMergedPdf(pdfs: Array<Pdf>, outPdf: Pdf): Promise<Pdf> {
+  static async generateMergedPdf(pdfs: Array<Pdf>, outPdf: Pdf, workDirectory: string, titlePages: boolean): Promise<Pdf> {
     const merger = new PdfMerger()
-    pdfs.forEach(pdf => {
+    for (const pdf of pdfs) {
       if (pdf !== null) {
-        merger.add(pdf.filename)
+        if(titlePages) {
+          const titledPagesPdfFilename = join(workDirectory, `${v4()}.pdf` )
+          const titledPdf = PdfFactory.generatePdfObject(new PdfConstructorOptions('', titledPagesPdfFilename))
+          await PdfFactory.generatePdfWithRepeatedTitles (pdf, titledPdf)
+          merger.add(titledPdf.filename)
+        } else {
+          merger.add(pdf.filename)
+        }
       }
-    })
+    }
     await merger.save(outPdf.filename)
     return outPdf
   }
@@ -47,24 +58,44 @@ export class PdfFactory {
         {
           text: title,
           style: 'header',
+          color: '#002d55',
         },
         {
           text: subtitle,
           style: 'subheader',
+          color: '#00853e',
         },
+        {
+          text: dateFormat(new Date(), 'mmmm dd, yyyy'),
+          style: 'date',
+          color: '#002d55',
+        },
+        {
+          image: path.join(__dirname, '../../demo/LeverForChange_Logo.png'),
+          width: 200,
+          style: 'logo',
+        }
       ],
       styles: {
         header: {
-          fontSize: 32,
+          font: 'Oswald',
+          fontSize: 36,
           bold: true,
-          alignment: 'center',
-          margin: [0, 300, 0, 0],
+          margin: [0, 100, 0, 0],
         },
         subheader: {
-          alignment: 'center',
-          fontSize: 18,
-          margin: [0, 10, 0, 0],
+          font: 'Oswald',
+          fontSize: 24,
+          margin: [0, 0, 0, 0],
         },
+        date: {
+          font: 'Oswald',
+          fontSize: 14,
+          margin: [0, 14, 0, 0],
+        },
+        logo: {
+          margin: [0, 350, 0, 0],
+        }
       },
     }
     await PdfFactory.generatePdfFromScaffold(scaffold, outPdf)
@@ -100,7 +131,7 @@ export class PdfFactory {
               { text: currentPageNumber, alignment: 'right', width: '5%' },
             ],
             style: 'toc',
-            margin: [5, 0]
+            margin: [5, 10]
          },
         })
         return toc
@@ -119,17 +150,22 @@ export class PdfFactory {
       ],
       styles: {
         header: {
-          fontSize: 18,
+          font: 'Oswald',
+          color: '#00853e',
+          fontSize: 20,
           bold: true,
-          alignment: 'center',
-          margin: [0, 50, 0, 80]
+          margin: [0, 50, 0, 10]
         },
         subheader: {
+          font: 'Oswald',
+          color: '#002d55',
           fontSize: 14
         },
         toc: {
-          fontSize: 10,
-          margin: [15, 0, 15, 0]
+          font: 'Oswald',
+          color: '#002d55',
+          fontSize: 14,
+          margin: [65, 50, 65, 50]
         }
       }
     }
@@ -138,6 +174,12 @@ export class PdfFactory {
 
   static async generatePdfFromScaffold(scaffold, outPdf: Pdf): Promise<void> {
     const printer = new PdfPrinter({
+      Oswald: {
+        normal: path.join(__dirname, '../../demo/Oswald-Regular.ttf'),
+        bold: path.join(__dirname, '../../demo/Oswald-SemiBold.ttf'),
+        italics: path.join(__dirname, '../../demo/Oswald-Regular.ttf'),
+        bolditalics: path.join(__dirname, '../../demo/Oswald-Regular.ttf'),
+      },
       Roboto: {
         normal: path.join(__dirname, '../../fonts/Roboto-Regular.ttf'),
         bold: path.join(__dirname, '../../fonts/Roboto-Medium.ttf'),
@@ -163,12 +205,34 @@ export class PdfFactory {
     pages.forEach((page, i) => {
       const { width, height } = page.getSize()
       page.drawText(`${i + 1}`, {
-        x: width - 15,
-        y: 15,
-        size: 10,
+        x: width - 35,
+        y: height - 35,
+        size: 12,
         font: helveticaFont,
-        color: rgb(0, 0, 0),
+        color: rgb(0, .176, .333)
       })
+    })
+    fs.writeFileSync(outPdf.filename, await pdfDoc.save())
+  }
+
+  static async generatePdfWithRepeatedTitles (inPdf: Pdf, outPdf: Pdf): Promise<void> {
+    const pdfDoc = await PDFDocument.load(fs.readFileSync(inPdf.filename))
+    const url = path.join(__dirname, '../../demo/Oswald-Regular.ttf')
+    pdfDoc.registerFontkit(fontkit)
+    const fontBytes = await fs.readFileSync(url)
+    const oswaldFont = await pdfDoc.embedFont(fontBytes)
+    const pages = pdfDoc.getPages()
+    pages.forEach((page, i) => {
+      if(i > 0) {
+        const { width, height } = page.getSize()
+        page.drawText(inPdf.title, {
+          x: 35,
+          y: height - 35,
+          size: 12,
+          font: oswaldFont,
+          color: rgb(0, .176, .333)
+        })
+      }
     })
     fs.writeFileSync(outPdf.filename, await pdfDoc.save())
   }
