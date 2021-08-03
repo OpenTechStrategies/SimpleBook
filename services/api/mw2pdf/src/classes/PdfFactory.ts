@@ -200,15 +200,18 @@ export class PdfFactory {
 
   static async generatePdfWithPageNumbers (inPdf: Pdf, outPdf: Pdf): Promise<void> {
     const pdfDoc = await PDFDocument.load(fs.readFileSync(inPdf.filename))
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+    const url = path.join(__dirname, '../../demo/Oswald-Regular.ttf')
+    pdfDoc.registerFontkit(fontkit)
+    const fontBytes = await fs.readFileSync(url)
+    const oswaldFont = await pdfDoc.embedFont(fontBytes)
     const pages = pdfDoc.getPages()
     pages.forEach((page, i) => {
       const { width, height } = page.getSize()
       page.drawText(`${i + 1}`, {
         x: width - 35,
         y: height - 35,
-        size: 12,
-        font: helveticaFont,
+        size: 8,
+        font: oswaldFont,
         color: rgb(0, .176, .333)
       })
     })
@@ -228,7 +231,7 @@ export class PdfFactory {
         page.drawText(inPdf.title, {
           x: 35,
           y: height - 35,
-          size: 12,
+          size: 8,
           font: oswaldFont,
           color: rgb(0, .176, .333)
         })
